@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/models/product';
-import { ProductResponseModel } from 'src/app/models/productResponseModel';
 import { ProductService } from 'src/app/services/product.service';
 // import {HttpClient} from '@angular/common/http'; //to fetch data from the API.
 
@@ -11,14 +11,22 @@ import { ProductService } from 'src/app/services/product.service';
 })
 export class ProductComponent implements OnInit {
 
-
   products:Product[] = []
+  dataLoaded:boolean= false
 
-
-  constructor(private productService:ProductService) { } //creates an instance of ProductComponent class in the memory.
+  constructor(private productService:ProductService, private activatedRoute:ActivatedRoute) { } //creates an instance of ProductComponent class in the memory.
 
   ngOnInit(): void { //it's the first method to be executed when our ProductComponent placed in DOM hierarchy
-    this.getProducts()
+    this.activatedRoute.params.subscribe(params => {
+      if(params["categoryId"]) //categoryId because we gave the route as categoryId in app.route.module.ts file.
+      {
+       this.getProductsByCategory(params["categoryId"]) //if there is a categoryExist, then return getProductsByCategoryId 
+      } 
+      else {
+        this.getProducts()
+      }
+    
+    })
   }
 
 
@@ -27,6 +35,14 @@ export class ProductComponent implements OnInit {
   getProducts(){
     this.productService.getProducts().subscribe(response => {
       this.products = response.data
+      this.dataLoaded = true
+    })
+  }
+
+  getProductsByCategory(categoryId:number){
+    this.productService.getProductsByCategoryId(categoryId).subscribe(response => {
+      this.products = response.data
+      this.dataLoaded = true
     })
   }
 }
