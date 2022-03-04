@@ -1,10 +1,14 @@
-<ul class="list-group">
-  <li [class] = "getAllCategoryClass()" routerLink = "/products" class = "list-group-item-active">Tum Urunler</li>
-  <li  (click) = "setCurrentCategory(category)"
+<div class="list-group">
+  <a [class] = "getAllCategoryClass()" 
+  routerLink = "/products" 
+  class = "list-group-item-active"
+  (click) = "setCurrentCategoryEmpty()"
+  >Tum Urunler</a>
+  <a  (click) = "setCurrentCategory(category)"
     *ngFor = "let category of categories"
     [class]="getCurrentCategory(category)"
     routerLink="/products/category/{{category.categoryId}}"
-    >{{category.categoryName}}</li>
-</ul>
+    >{{category.categoryName}}</a>
+</div>
 
 <h5 *ngIf = "currentCategory"> {{currentCategory.categoryName}} seçtiniz</h5>

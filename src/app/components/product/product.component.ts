@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Product } from 'src/app/models/product';
+import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
 // import {HttpClient} from '@angular/common/http'; //to fetch data from the API.
 
@@ -13,8 +15,13 @@ export class ProductComponent implements OnInit {
 
   products:Product[] = []
   dataLoaded:boolean= false
-
-  constructor(private productService:ProductService, private activatedRoute:ActivatedRoute) { } //creates an instance of ProductComponent class in the memory.
+  filterText:string = ""
+  currentProduct:Product
+  constructor(private productService:ProductService,
+     private activatedRoute:ActivatedRoute,
+     private toastr:ToastrService,
+     private cartService:CartService
+     ) { } //creates an instance of ProductComponent class in the memory.
 
   ngOnInit(): void { //it's the first method to be executed when our ProductComponent placed in DOM hierarchy
     this.activatedRoute.params.subscribe(params => {
@@ -28,7 +35,6 @@ export class ProductComponent implements OnInit {
     
     })
   }
-
 
   //we'll create a function to get Products from our API,
   //write the function here for you would'nt want your code to become an Italian chief's special. 
@@ -45,4 +51,22 @@ export class ProductComponent implements OnInit {
       this.dataLoaded = true
     })
   }
+
+
+  addToCart(product:Product){
+    if(product.productId===1){
+      this.toastr.error("Error", "This product cannot be send to the cart.")
+    } else{
+      this.cartService.addToChart(product)
+      this.toastr.success(product.productName + " added to cart")
+    }
+  }
+
+
+
+  
+  test() {
+    this.toastr.success("I'm a toast!", "Success!");
+  }
+  
 }
